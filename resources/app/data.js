@@ -13,7 +13,6 @@ var nwDir = path.dirname(nwPath);
 
 var logger = require('../libs/logger').getLogger('data_node.js');
 var utils = require('../libs/utils');
-var SDK = require('../libs/play');
 
 //!*根据地址获取数据*!
 global.carData = [];
@@ -66,60 +65,6 @@ var getDate = function () {
     })
 };
 
-var viewTableFun = {
-    appendCarList: function (json, id, cb) {
-        var s = "";
-        $.each(json, function (index, obj) {
-            if (!obj.number) {
-                obj.number = $("#playModal input[name=taskNumber]").val();
-            }
-            var select = "<button type='button'data-loading-text='立即播放' class='btn btn-success singleCarList' onclick=\"singleCarListPlay(\'" + obj.id + "\')\">立即播放</button> <button type='button' class='btn btn-info'onclick=\"modifyCarListView(\'" + obj.id + "\')\">修改</button>";
-            s += "<tr data-json=\'" + JSON.stringify(obj) + "\' id=\'" + obj.id + "\' class='text-center'><td>" + obj.time + "</td><td>" + obj.carNumber + "</td><td>" + obj.terminus + "</td><td>" + obj.carType + "</td><td>" + obj.platformNo + "</td><td>" + obj.number + "</td><td>" + select + "</td></tr>";
-        });
-        setTimeout(function () {
-            cb(id, s);
-            s = "";
-        }, 30)
-    },
-    appendHistory: function (json, id, cb) {
-        var s = "";
-        $.each(json, function (index, obj) {
-            obj.number = $("#playModal input[name=taskNumber]").val();
-            var select = "<button type='button' class='btn btn-info' onclick=\"goTop(\'viewCarList\',\'" + obj.id + "\')\">顶部</button> <button type='button' class='btn btn-success'onclick=\"goButton(\'viewCarList\',\'" + obj.id + "\')\">尾部</button>";
-            s += "<tr data-json=\'" + JSON.stringify(obj) + "\' id=\'" + obj.id + "\' class='text-center'><td>" + obj.time + "</td><td>" + obj.carNumber + "</td><td>" + obj.terminus + "</td><td>" + obj.carType + "</td><td>" + obj.platformNo + "</td><td>" + obj.number + "</td><td>" + select + "</td></tr>";
-        });
-        setTimeout(function () {
-            cb(id, s);
-            s = "";
-        }, 30)
-    },
-    appendStr: function (id, str) {
-        $("#" + id).append(str);
-    },
-    viewCarList: function (data) {
-        $("#viewCarList").children("tr").remove();
-        viewTableFun.appendCarList(data, "viewCarList", viewTableFun.appendStr);
-    },
-    viewHistory: function (data) {
-        $("#historyList").children("tr").remove();
-        viewTableFun.appendHistory(data, "historyList", viewTableFun.appendStr);
-    },
-    carTohistory: function (id) {
-        var s = "<button type='button' class='btn btn-info' onclick=\"goTop(\'viewCarList\',\'" + id + "\')\">顶部</button> <button type='button' class='btn btn-success'onclick=\"goButton(\'viewCarList\',\'" + id + "\')\">尾部</button>";
-        $("#" + id).children("td:eq(6)").html(s);
-        return $("#" + id);
-    },
-    historyToCar: function (id) {
-        var s = "<button type='button' data-loading-text='立即播放' class='btn btn-success singleCarList' onclick=\"singleCarListPlay(\'" + id + "\')\">立即播放</button> <button type='button' class='btn btn-info'onclick=\"modifyCarListView(\'" + id + "\')\">修改</button>";
-        $("#" + id).children("td:eq(6)").html(s);
-        return $("#" + id);
-    },
-    viewSpeechStr: function (data) {
-        var select = "<div class='btn-group'><button type='button' class='btn btn-success' onclick=\"singlePlay(\'" + data.id + "\')\">播放</button> <button type='button' class='btn btn-info'onclick=\"modifySpeech(\'" + data.id + "\')\">修改</button> <button type='button' class='btn btn-warning'onclick=\"deleteSpeech(\'" + data.id + "\')\">删除</button></div>";
-        var str = "<tr class='text-center' data-json='" + JSON.stringify(data) + "' id='" + data.id + "'><td>" + data.title + "</td><td>" + data.content + "</td><td> " + select + " </td></tr>";
-        return str;
-    }
-};
 
 /*从本地取数据展现*/
 var array = [];//车次列表
@@ -152,8 +97,8 @@ var viewTable = function () {
             oldArray.push(data[s]);
         }
     }
-    viewTableFun.viewCarList(array);
-    viewTableFun.viewHistory(oldArray);
+    utils.viewTableFun.viewCarList(array);
+    utils.viewTableFun.viewHistory(oldArray);
 };
 
 /*保存以修改播报次数的车次信息 数组长度大于500，推陈出新*/
@@ -187,76 +132,6 @@ var autoGetData = function () {
     }, intervalTime);
 };
 
-/*---------------play-----------------*/
-var play = function () {
-    $("#play").click(function () {
-        if ($("#viewCarList >tr").length != 0) {
-            var json = $("#viewCarList").children("tr:first").attr("data-json");
-            json = JSON.parse(json);
-            var id = json.id;
-            var number = json.number;
-            var rule = $("#playModal input[name=rulePlay]").val();
-            var rulePlay = utils.rulePlay.rulePlayStr(json, rule);
-            var aheadTime = $("#playModal input[name=aheadTime]").val();
-            var data = {speech: rulePlay, id: id, time: json.time, aheadTime: aheadTime, taskNumber: number};
-
-            $("#" + id).attr("class", "success text-center");
-            $("#play").button("loading");
-
-            SDK.play(data, function (d) {
-                console.info("play" + d.status);
-                if (d.status == '0') {
-                    var historyList = $("#historyList");
-                    if (historyList.children("tr[id=" + id + "]").length == 0) {
-                        historyList.append(viewTableFun.carTohistory(id));
-                    } else {
-                        $("#viewCarList").children("tr[id=" + id + "]").remove();
-                    }
-                    $("#play").trigger("click");
-                    $("#" + id).attr("class", "text-center");
-                } else if (d.status == "1") {
-                    $("#play").trigger("click");
-                } else {
-                    $("#play").button("reset");
-                    $("#" + id).attr("class", "text-center");
-                }
-            });
-        } else {
-            $("#play").button("reset");
-            return false;
-        }
-    })
-};
-
-/*------------stop-----------*/
-var stop = function () {
-    $("#stop,#speechStop").click(function () {
-        SDK.stop(function (d, time) {
-            if (d.status == 1) {
-                if (time) {
-                    time.cancel();
-                }
-                $("#play").button("reset");
-                $("#speechJob").button("reset");
-            }
-        })
-    })
-};
-
-/*-----------speechPlay-----------*/
-var speechPlay = function () {
-    $("#speechPlay").click(function () {
-        $("#speechPlay").button("loading");
-        SDK.speechPlay({speech: $("input[name=speech]").val(), taskNumber: 1}, function (data) {
-            if (data.status == 0) {
-                console.info(data.status);
-                $("#speechPlay").button("reset");
-                //TODO
-            }
-        })
-    })
-};
-
 var saveSpeech = function () {
     $("#saveSpeech").click(function () {
         var data = {
@@ -278,7 +153,7 @@ var saveSpeech = function () {
             data.id = key;
             sp.content[key] = data;
             fs.writeFileSync(nwDir + "/tempJob.ini", ini.stringify(sp), {start: 0, flags: "w", encoding: "utf8"});
-            $("#speechList").append(viewTableFun.viewSpeechStr(data));
+            $("#speechList").append(utils.viewTableFun.viewSpeechStr(data));
         });
     })
 };
@@ -289,7 +164,7 @@ var viewSpeech = function () {
             var sp = ini.parse(fs.readFileSync(nwDir + "/tempJob.ini", "utf8"));
             if (sp.content != undefined) {
                 $.each(sp.content, function (index, obj) {
-                    $("#speechList").append(viewTableFun.viewSpeechStr(obj));
+                    $("#speechList").append(utils.viewTableFun.viewSpeechStr(obj));
                 });
             }
         }
@@ -327,12 +202,6 @@ var init = function () {
     saveCarListNumber();
     /*自动获取数据*/
     autoGetData();
-    /*任务播报*/
-    play();
-    /*任务停止*/
-    stop();
-    /*插播*/
-    speechPlay();
     /*保存自定义任务*/
     saveSpeech();
     /*展现自定义任务*/
@@ -351,15 +220,6 @@ function modifyCarListView(id) {
     $("#modifyCarListViewModal input[name=taskNumberId]:hidden").val(id);
 }
 
-global.carBusId = [];//已经读过的信息ID
-/*保存以播报的车次ID 数组长度大于500，推陈出新*/
-var saveCarBusId = function (id) {
-    global.carBusId.unshift(id);
-    if (global.carBusId.length == 1000) {
-        global.carBusId.pop();
-    }
-};
-
 function goTop(fid, id) {
     for (var i = 0; i < global.carBusId.length; i++) {
         if (id.indexOf(global.carBusId[i]) != -1) {
@@ -367,7 +227,7 @@ function goTop(fid, id) {
             return global.carBusId;
         }
     }
-    $("#" + fid).prepend(viewTableFun.historyToCar(id));
+    $("#" + fid).prepend(utils.viewTableFun.historyToCar(id));
 }
 
 function goButton(fid, id) {
@@ -377,7 +237,7 @@ function goButton(fid, id) {
             return global.carBusId;
         }
     }
-    $("#" + fid).prepend(viewTableFun.historyToCar(id));
+    $("#" + fid).prepend(utils.viewTableFun.historyToCar(id));
 }
 
 /*新增修改自定义任务*/
@@ -397,27 +257,6 @@ function modifySpeech(id) {
     $("#addSpeechModalLabel").html("修改");
     $("#saveSpeech").addClass("hide");
     $("#updateSpeech").removeClass("hide");
-}
-
-/*车次列表立即播报*/
-function singleCarListPlay(id) {
-    var json = $("#" + id).attr("data-json");
-    json = JSON.parse(json);
-    var number = json.number;
-    var rule = $("#playModal input[name=rulePlay]").val();
-    var rulePlay = utils.rulePlay.rulePlayStr(json, rule);
-    SDK.speechPlay({speech: rulePlay, taskNumber: number, id: id}, function (data) {
-        if (data.status == '0') {
-            var historyList = $("#historyList");
-            /*历史列表中不存在就插入否则就移除*/
-            if (historyList.children("tr[id=" + id + "]").length == 0) {
-                historyList.append(viewTableFun.carTohistory(id));
-            } else {
-                $("#viewCarList").children("tr[id=" + id + "]").remove();
-            }
-            saveCarBusId(id);
-        }
-    });
 }
 
 /*删除自定义任务*/
