@@ -4,9 +4,9 @@
 'use strict';
 var url = require("url");
 var http = require("http");
-var logger = require('../libs/logger').getLogger('data_node.js');
-var utils = require('../libs/utils');
-var SDK = require('../libs/play');
+var logger = require('./resources/libs/logger').getLogger('data_node.js');
+var utils = require('./resources/libs/utils');
+var SDK = require('./resources/libs/play');
 
 
 
@@ -29,7 +29,6 @@ var play = function () {
             $("#play").button("loading");
 
             SDK.play(data, function (d) {
-                //console.info("play" + d.status);
                 if (d.status == 0) {
                     var historyList = $("#historyList");
                     if (historyList.children("tr[id=" + id + "]").length == 0) {
@@ -56,15 +55,13 @@ var play = function () {
 /*------------stop-----------*/
 var stop = function () {
     $("#stop,#speechStop").click(function () {
-        SDK.stop(function (d, time) {
+        SDK.stop(function (d) {
             if (d.status == 1) {
-                if (time) {
-                    time.cancel();
-                }
                 global.statusPlay = 0;
                 $("#play").button("reset");
                 $("#speechJob").button("reset");
-
+                $("#speechPlay").button("reset");
+                $(".singleCarList").button("reset");
             }
         })
     })
@@ -121,6 +118,7 @@ var speechJob = function () {
                     if (dataSpeech.attr("data-json") != undefined) {
                         $("#speechJob").trigger("click");
                     } else {
+                        recoveryPlay();
                         dataSpeech = undefined;
                         $("#speechJob").button("reset");
                     }
@@ -147,13 +145,15 @@ global.carBusId = [];//已经读过的信息ID
 /*保存以播报的车次ID 数组长度大于500，推陈出新*/
 var saveCarBusId = function (id) {
     global.carBusId.unshift(id);
-    if (global.carBusId.length == 1000) {
+    if (global.carBusId.length == 100000) {
         global.carBusId.pop();
     }
 };
 
 /*车次列表立即播报*/
 function singleCarListPlay(id) {
+    $("#" + id).attr("class", "success text-center");
+    $("#" + id).find("button[class='btn btn-success singleCarList']").button("loading");
     var json = $("#" + id).attr("data-json");
     json = JSON.parse(json);
     var number = json.number;
@@ -169,7 +169,10 @@ function singleCarListPlay(id) {
                 $("#viewCarList").children("tr[id=" + id + "]").remove();
             }
             saveCarBusId(id);
+            recoveryPlay();
         }
+        $("#" + id).find("button[class='btn btn-success singleCarList disabled']").button("reset");
+        $("#" + id).attr("class", "text-center");
     });
 }
 

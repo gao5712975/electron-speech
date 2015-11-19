@@ -11,8 +11,8 @@ var path = require('path');
 var nwPath = process.execPath;
 var nwDir = path.dirname(nwPath);
 
-var logger = require('../libs/logger').getLogger('data_node.js');
-var utils = require('../libs/utils');
+var logger = require('./resources/libs/logger').getLogger('data_node.js');
+var utils = require('./resources/libs/utils');
 
 //!*根据地址获取数据*!
 global.carData = [];
@@ -67,11 +67,11 @@ var getDate = function () {
 
 
 /*从本地取数据展现*/
-var array = [];//车次列表
+var carArray = [];//车次列表
 var oldArray = [];//历史车次列表
-var viewTable = function () {
+global.viewTable = function () {
     var data = global.carData;
-    array.length = 0;
+    carArray.length = 0;
     oldArray.length = 0;
     for (var s in data) {
         var hour = new Date().getHours();
@@ -88,8 +88,9 @@ var viewTable = function () {
         }
         /*过滤到期时间*/
         if (hour_d > hour || (hour_d == hour && minutes_d + 1 > minutes)) {
+            /*已播报的任务过滤到历史列表中*/
             if (global.carBusId.indexOf(data[s].id) == -1) {
-                array.push(data[s]);
+                carArray.push(data[s]);
             } else {
                 oldArray.push(data[s]);
             }
@@ -97,7 +98,7 @@ var viewTable = function () {
             oldArray.push(data[s]);
         }
     }
-    utils.viewTableFun.viewCarList(array);
+    utils.viewTableFun.viewCarList(carArray);
     utils.viewTableFun.viewHistory(oldArray);
 };
 

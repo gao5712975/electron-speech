@@ -5,7 +5,7 @@ var path = require('path');
 var nwPath = process.execPath;
 var nwDir = path.dirname(nwPath);
 
-var logger = require('../libs/logger').getLogger('config.js');
+var logger = require('./resources/libs/logger').getLogger('config.js');
 
 global.serverUrl = "http://192.168.2.41:3001/Speech/";//发布地址
 
@@ -61,10 +61,15 @@ var savePlayConfig = function () {
         if (p.play == undefined) {
             p.play = {};
         }
+        var oldTaskNumber = p.play.taskNumber;
+
         p.play.taskNumber = taskNumber;
         p.play.aheadTime = aheadTime;
         p.play.rulePlay = rulePlay;
         fs.writeFileSync(nwDir + "/config.ini", ini.stringify(p), {start: 0, flags: "w", encoding: "utf8"});
+        if(oldTaskNumber != taskNumber){
+            viewTable();
+        }
     });
 };
 

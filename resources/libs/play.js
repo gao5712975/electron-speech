@@ -107,7 +107,10 @@ var stop = function (callblack) {
         ma.on("data", function (data) {
             postData += data;
         }).on("end", function () {
-            callblack(JSON.parse(postData), global.timeout);
+            if ( global.timeout) {
+                global.timeout.cancel();
+            }
+            callblack(JSON.parse(postData));
         }).on("error", function (e) {
             logger.error(e.message);
         });
