@@ -8,6 +8,7 @@
     <!-- 可选的Bootstrap主题文件（一般不用引入） -->
     <link rel="stylesheet" href="./resources/static/css/bootstrap-theme.min.css">
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <!--<script src="./resources/static/js/jquery-1.11.3.min.js"></script>-->
     <script>window.$ = window.jQuery = require('./resources/static/js/jquery-1.11.3.min.js');</script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="./resources/static/js/bootstrap.min.js"></script>
@@ -197,13 +198,15 @@
                 <div class="form-group">
                     <label for="exampleInputSpeed">语速</label>
                     <input type="number" min="0" class="form-control" name="speed" id="exampleInputSpeed"
-                           placeholder="speed" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                           placeholder="speed" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D/g,'')"
                            value="1">
                 </div>
                 <div class="form-group">
                     <label for="exampleInputVolume">音量</label>
                     <input type="number" min="0" class="form-control" name="volume" id="exampleInputVolume"
-                           placeholder="volume" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                           placeholder="volume" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D/g,'')"
                            value="1">
                 </div>
                 <div class="form-group">
@@ -244,7 +247,8 @@
 
                     <div class="input-group">
                         <input type="number" min="0" class="form-control" name="aheadTime" id="exampleInputAheadTime"
-                               placeholder="aheadTime" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                               placeholder="aheadTime" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                               onafterpaste="this.value=this.value.replace(/\D/g,'')"
                                value="15">
 
                         <div class="input-group-addon">分钟</div>
@@ -275,7 +279,8 @@
 
                     <div class="input-group">
                         <input type="number" min="1" class="form-control" name="taskNumber" id="exampleInputNumber"
-                               placeholder="number" onkeyup="this.value=this.value.replace(/\D/g,'')"  onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                               placeholder="number" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                               onafterpaste="this.value=this.value.replace(/\D/g,'')"
                                value="1">
 
                         <div class="input-group-addon">次</div>
@@ -300,18 +305,8 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="exampleInputAddress">本机IP</label>
-                    <input type="text" class="form-control" name="address" id="exampleInputAddress"
-                           placeholder="address">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputReleaseUrl">发布地址</label>
-                    <input type="text" class="form-control" name="releaseUrl" id="exampleInputReleaseUrl"
-                           placeholder="releaseUrl">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputUrl">请求地址</label>
-                    <input type="text" class="form-control" name="url" id="exampleInputUrl" placeholder="url">
+                    <label for="exampleInputDataUrl">请求地址</label>
+                    <input type="text" class="form-control" name="dataUrl" id="exampleInputDataUrl" placeholder="dataUrl">
                 </div>
             </div>
             <div class="modal-footer">
@@ -367,8 +362,10 @@
 
                     <div class="input-group">
                         <input type="number" min="1" class="form-control" name="updateTime" id="exampleInputUpdateTime"
-                               placeholder="updateTime" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                               placeholder="updateTime" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                               onafterpaste="this.value=this.value.replace(/\D/g,'')"
                                value="30">
+
                         <div class="input-group-addon">分钟</div>
                     </div>
                 </div>
@@ -419,8 +416,10 @@
 
                     <div class="input-group">
                         <input type="number" min="1" class="form-control" name="taskNumber" id="exampleInputTaskNumber"
-                               placeholder="taskNumber" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                               placeholder="taskNumber" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                               onafterpaste="this.value=this.value.replace(/\D/g,'')"
                                value="1">
+
                         <div class="input-group-addon">次</div>
                     </div>
                 </div>

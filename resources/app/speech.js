@@ -4,7 +4,7 @@
 'use strict';
 var url = require("url");
 var http = require("http");
-var logger = require('./resources/libs/logger').getLogger('data_node.js');
+var logger = require('./resources/libs/logger').getLogger('speech.js');
 var utils = require('./resources/libs/utils');
 var SDK = require('./resources/libs/play');
 

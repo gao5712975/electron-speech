@@ -7,7 +7,7 @@ var nwDir = path.dirname(nwPath);
 
 var logger = require('./resources/libs/logger').getLogger('config.js');
 
-global.serverUrl = "http://192.168.2.41:3001/Speech/";//发布地址
+global.dataUrl = "http://127.0.0.1:3001/Speech";//发布地址
 
 var viewConfig = function(){
     fs.exists(nwDir + '/config.ini', function (exists) {
@@ -16,15 +16,13 @@ var viewConfig = function(){
             $("#soundModal input[name=speed]").val(data.sound.speed);
             $("#soundModal input[name=volume]").val(data.sound.volume);
             $("#soundModal select[name=timbre]").val(data.sound.timbre);
-            //$("#configureModal input[name=url]").val(data.configure.url);
-            //$("#configureModal input[name=address]").val(data.configure.ip);
-            //$("#configureModal input[name=releaseUrl]").val(data.configure.releaseUrl);
             $("#playModal input[name=taskNumber]").val(data.play.taskNumber);
             $("#playModal input[name=aheadTime]").val(data.play.aheadTime);
             $("#playModal input[name=rulePlay]").val(data.play.rulePlay);
             $("#getDataModal input[name=updateTime]").val(data.updateData.updateTime);
             $("#loginModal input[name=user]").val(data.login.user);
             $("#loginModal input[name=password]").val(data.login.password);
+            $("#configureModal input[name=dataUrl]").val(data.urlConfig.dataUrl);
         }else{
             fs.createWriteStream(nwDir + '/config.ini', {start: 0, flags: "w", encoding: "utf8"});
             var c = ini.parse(fs.readFileSync(nwDir + "/config.ini", "utf8"));
@@ -85,11 +83,26 @@ var saveGetDataConfig = function(){
     });
 };
 
+
+
+var saveConfigureConfig = function(){
+    $("#saveConfigureConfig").click(function () {
+        var dataUrl = $("#configureModal input[name=dataUrl]").val();
+        var l = ini.parse(fs.readFileSync(nwDir + "/config.ini", "utf8"));
+        if (l.urlConfig == undefined) {
+            l.urlConfig = {};
+        }
+        l.urlConfig.dataUrl = dataUrl;
+        fs.writeFileSync(nwDir + "/config.ini", ini.stringify(l), {start: 0, flags: "w", encoding: "utf8"});
+    });
+};
+
 var init = function () {
     viewConfig();
     saveSoundConfig();
     savePlayConfig();
     saveGetDataConfig();
+    saveConfigureConfig();
 };
 
 init();

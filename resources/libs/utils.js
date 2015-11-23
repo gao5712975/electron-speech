@@ -11,7 +11,7 @@ var alertModal = function (text) {
 };
 
 var rulePlay = {
-    rulePlayStr: function (data,rule) {
+    rulePlayStr: function (data, rule) {
         if (rule != undefined && rule != "") {
             rule = rule.replace("${terminus}", data.terminus);
             rule = rule.replace("${carNumber}", rulePlay.numberOfString(data.carNumber));
@@ -71,9 +71,7 @@ var viewTableFun = {
         var s = "";
         var num = $("#playModal input[name=taskNumber]").val();
         $.each(json, function (index, obj) {
-            if(obj.number){
-                num = obj.number;
-            }
+            obj.number = num;
             var select = "<button type='button'data-loading-text='立即播放' class='btn btn-success singleCarList' onclick=\"singleCarListPlay(\'" + obj.id + "\')\">立即播放</button> <button type='button' class='btn btn-info'onclick=\"modifyCarListView(\'" + obj.id + "\')\">修改</button>";
             s += "<tr data-json=\'" + JSON.stringify(obj) + "\' id=\'" + obj.id + "\' class='text-center'><td>" + obj.time + "</td><td>" + obj.carNumber + "</td><td>" + obj.terminus + "</td><td>" + obj.carType + "</td><td>" + obj.platformNo + "</td><td>" + num + "</td><td>" + select + "</td></tr>";
         });
@@ -125,5 +123,5 @@ var viewTableFun = {
 module.exports = {
     alertModal: alertModal,
     rulePlay: rulePlay,
-    viewTableFun:viewTableFun
+    viewTableFun: viewTableFun
 };

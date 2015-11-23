@@ -19,11 +19,15 @@ var login = function () {
     $("#login").click(function () {
         var user = $("#loginModal input[name=user]").val();
         var password = $("#loginModal input[name=password]").val();
+        var dataUrl = $("#configureModal input[name=dataUrl]").val();
+        if(dataUrl != '' && dataUrl != undefined && dataUrl != global.dataUrl){
+            global.dataUrl = dataUrl;
+        }
         var data = {
             user: user,
             password: password
         };
-        var optUrl = url.parse(serverUrl + "admin/login.do");
+        var optUrl = url.parse(global.dataUrl+"/admin/login.do");
         optUrl.method = "post";
         optUrl.headers = {"Content-Type": 'application/x-www-form-urlencoded'};
         var postData = "";

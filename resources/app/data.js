@@ -11,7 +11,7 @@ var path = require('path');
 var nwPath = process.execPath;
 var nwDir = path.dirname(nwPath);
 
-var logger = require('./resources/libs/logger').getLogger('data_node.js');
+var logger = require('./resources/libs/logger').getLogger('data.js');
 var utils = require('./resources/libs/utils');
 
 //!*根据地址获取数据*!
@@ -19,7 +19,11 @@ global.carData = [];
 var time;
 var getDate = function () {
     $("#getData").click(function () {
-        var optUrl = url.parse(serverUrl + "admin/findDataList.do");
+        var dataUrl = $("#configureModal input[name=dataUrl]").val();
+        if(dataUrl != '' && dataUrl != undefined && dataUrl != global.dataUrl){
+            global.dataUrl = dataUrl;
+        }
+        var optUrl = url.parse(global.dataUrl+"/admin/findDataList.do");
         optUrl.headers = {"Content-Type": 'application/x-www-form-urlencoded'};
         optUrl.method = "post";
 

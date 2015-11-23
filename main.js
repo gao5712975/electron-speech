@@ -10,5 +10,13 @@ app.on('ready', function() {
         height: 585,
         width: 1000
     });
+    mainWindow.on('closed', function() {
+        mainWindow = null;
+    });
     mainWindow.loadUrl('file://' + __dirname + '/index.html');
+    mainWindow.show();
+});
+
+app.on('window-all-closed', function() {
+    app.quit();
 });

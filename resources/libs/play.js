@@ -16,7 +16,11 @@ var logger = require('./logger').getLogger('play.js');
 var speechPlay = function (dataStr, callblack) {
     stop(function (da) {
         if (da.status == 1) {
-            var optUrl = url.parse(serverUrl + "admin/speechPlay.do");
+            var dataUrl = $("#configureModal input[name=dataUrl]").val();
+            if(dataUrl != '' && dataUrl != undefined && dataUrl != global.dataUrl){
+                global.dataUrl = dataUrl;
+            }
+            var optUrl = url.parse(global.dataUrl + "/admin/speechPlay.do");
             optUrl.method = "post";
             optUrl.headers = {"Content-Type": 'application/x-www-form-urlencoded'};
             var postData = "";
@@ -47,7 +51,12 @@ var speechPlay = function (dataStr, callblack) {
 var play = function (dataStr, callblack) {
    stop(function (da) {
        if(da.status == 1){
-           var optUrl = url.parse(serverUrl + "admin/speechPlay.do");
+
+          var dataUrl = $("#configureModal input[name=dataUrl]").val();
+          if(dataUrl != '' && dataUrl != undefined && dataUrl != global.dataUrl){
+              global.dataUrl = dataUrl;
+          }
+           var optUrl = url.parse(global.dataUrl + "/admin/speechPlay.do");
            optUrl.method = "post";
            optUrl.headers = {"Content-Type": 'application/x-www-form-urlencoded'};
 
@@ -99,7 +108,11 @@ var play = function (dataStr, callblack) {
  * @param callblack 返回状态码 定时任务对象
  */
 var stop = function (callblack) {
-    var optUrl = url.parse(serverUrl + "admin/stop.do");
+    var dataUrl = $("#configureModal input[name=dataUrl]").val();
+    if(dataUrl != '' && dataUrl != undefined && dataUrl != global.dataUrl){
+        global.dataUrl = dataUrl;
+    }
+    var optUrl = url.parse(global.dataUrl + "/admin/stop.do");
     optUrl.method = "post";
     optUrl.headers = {"Content-Type": 'application/x-www-form-urlencoded'};
     var manage = http.request(optUrl, function (ma) {

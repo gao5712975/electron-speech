@@ -9,13 +9,13 @@ var nwPath = process.execPath;
 var nwDir = path.dirname(nwPath);
 
 
-//var wininet = ffi.Library('Wininet.dll', {
-//    'InternetGetConnectedState': ['bool', [ref.refType('int'), 'int']]
-//});
-//
-//var intPtr = ref.alloc('int');
-//console.log(wininet.InternetGetConnectedState(intPtr, 0));
-//console.log(nwDir);
+var wininet = ffi.Library('Wininet.dll', {
+    'InternetGetConnectedState': ['bool', ['int', 'int']]
+});
+
+var intPtr = ref.alloc('int');
+console.log(wininet.InternetGetConnectedState(0, 0));
+console.log(nwDir);
 
 /*
  1    0 00011AD0 OKVGetLangMode
